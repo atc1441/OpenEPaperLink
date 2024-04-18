@@ -297,6 +297,7 @@ function processTags(tagArray) {
 			(async () => {
 				const localTagmac = tagmac;
 				const data = await getTagtype(element.hwType);
+				div.dataset.usetemplate = data.usetemplate;
 				if (data.usetemplate != 0) {
 					const template = await getTagtype(data.usetemplate);
 				}
