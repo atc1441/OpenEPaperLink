@@ -3,8 +3,8 @@
 
 #include <stdint.h>
 
-#define FW_VERSION 0x0003        // version number
-#define FW_VERSION_SUFFIX "-BETA" // suffix, like -RC1 or whatever.
+#define FW_VERSION 0x0004        // version number
+#define FW_VERSION_SUFFIX "-SP1" // suffix, like -RC1 or whatever.
 #define BAUD_115200              // Defaults to 1 megabaud this is not defined
 // #define DEBUGBLOCKS              // uncomment to enable extra debug information on the block transfers
 // #define FORCE_IMG_DL             // force tag to re-download every upload

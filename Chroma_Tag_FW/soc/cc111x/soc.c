@@ -10,6 +10,7 @@
 #include "logging.h"
 
 void boardGetOwnMac();
+void WriteDefaultSettings(void);
 
 char __xdata gMacString[17];
 __bit gEEpromFailure;
@@ -106,7 +107,12 @@ void boardGetOwnMac()
    xMemSet(gTempBuf320,0x00,sizeof(gTempBuf320));
    
    if(prvReadSetting(0x2a,gTempBuf320,7) < 0 && prvReadSetting(1,gTempBuf320,6) < 0) {
-      gEEpromFailure = true;
+      LOGA("Unable to read MAC address, restoring EEPROM defaults\n");
+      WriteDefaultSettings();
+      if(prvReadSetting(0x2a,gTempBuf320,7) < 0 && prvReadSetting(1,gTempBuf320,6) < 0) {
+         LOGA("Still unabel to read MAC address\n");
+         gEEpromFailure = true;
+      }
       return;
    }
 
@@ -324,4 +330,26 @@ void rndSeed(uint8_t seedA, uint8_t seedB)
    RNDL = seedA;
    RNDL = seedB;
 }
+
+// first byte is type, (0xff for done), second is length
+static const uint8_t __code gEEPROM_Img[] = {
+   // magicNum
+      0x56, 0x12, 0x09, 0x85,
+   // ADC intercept = 735
+      0x09,0x04,0xdf,0x02,
+   // ADC slope = 2650
+      0x12,0x04,0x5a,0x0a,
+   // SN 
+//    0x01,0x08, J   L  10   42   00   17  B
+      0x01,0x08,'J','L',0x10,0x42,0x00,0x17,
+   // VCOM: 0x26
+      0x23,0x3,0x26,
+      0xff
+};
+
+void WriteDefaultSettings()
+{
+   eepromWrite(0,(const void __xdata *)gEEPROM_Img,sizeof(gEEPROM_Img));
+}
+
 
